@@ -27,35 +27,37 @@ using namespace std;
 #define ce cout<<endl
 #define all(x) x.begin(),x.end()
 #define type(x) cerr<<typeid(x).name();
-const ll INF = 1e9;
 
-unordered_map<ll, unordered_map<ll, ll>> adj;
-vll dis(100005);
-bool processed[100005];
-void dijkstra(ll source)
+vi merge(vi arr1, vi arr2)
 {
-    dis[source] = 0;
-    priority_queue<pair<ll, ll>> q;
-    q.push({0, source});
-
-    while(!q.empty())
+    vi ans;
+    int i=0, j=0;
+    while(i!=arr1.size() and j!=arr2.size())
     {
-        auto temp = q.top();
-        ll distance = -temp.ff;
-        ll node = temp.ss;
-        q.pop();
-        if(processed[node])
-            continue;
-        processed[node] = true;
-        for(auto &child : adj[node])
-        {   
-            if(distance+child.ss < dis[child.ff]){
-                dis[child.ff] = distance+child.ss;
-                    q.push({-dis[child.ff], child.ff});
-                }
-        }
+        if(arr1[i]<arr2[j])
+            ans.pb(arr1[i]), i++;
+        else
+            ans.pb(arr2[j]), j++;
     }
+    while(i!=arr1.size())
+        ans.pb(arr1[i++]);
+    while(j!=arr2.size())
+        ans.pb(arr2[j++]);
+    return ans;
 }
+
+vi mergeSort(vi &arr, int start, int end)
+{
+    int mid = (start + end)/2;
+    vi ans;
+    if(start == end)
+    {
+        ans.pb(arr[start]);
+        return ans;
+    }
+    return merge(mergeSort(arr, start, mid), mergeSort(arr, mid+1, end));
+}
+
 
 int32_t main()
 {
@@ -65,22 +67,15 @@ int32_t main()
     freopen("output.txt", "w", stdout);
     #endif
   
-    ll n, m, u, v, w; cin>>n>>m;
-    f(i, m)
-    {
-        cin>>u>>v>>w;
-        if(adj[u][v]==0 or adj[u][v]>w)
-            adj[u][v] = w;
-        if(adj[v][u]==0 or adj[v][u]>w)
-            adj[v][u] = w;
-    }
-
-    dis.assign(n+1, INF);
-
-    dijkstra(1);
-    fa(i, 2, n+1)
-        cout<<dis[i]<<" ";
+    vi arr = {5,3,2,1,4};
+    f(i, arr.size())
+        cout<<arr[i]<<" ";
     cout<<endl;
+    arr = mergeSort(arr, 0, 4);
 
+
+    f(i, arr.size())
+        cout<<arr[i]<<" ";
+    cout<<endl;
     return 0;
 }

@@ -27,33 +27,34 @@ using namespace std;
 #define ce cout<<endl
 #define all(x) x.begin(),x.end()
 #define type(x) cerr<<typeid(x).name();
-const ll INF = 1e9;
 
-unordered_map<ll, unordered_map<ll, ll>> adj;
-vll dis(100005);
-bool processed[100005];
-void dijkstra(ll source)
+void heapify(vi &arr, int n, int i)
 {
-    dis[source] = 0;
-    priority_queue<pair<ll, ll>> q;
-    q.push({0, source});
+    int largest = i;
+    int left = 2*i+1;
+    int right = 2*i+2;
+    
+    if(left<n and arr[left]>arr[largest])
+        largest = left;
+    if(right<n and arr[right]>arr[largest])
+        largest = right;
+    if(largest != i){
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
+    }
+    
+}
 
-    while(!q.empty())
+void HeapSort(vi &arr, int n)
+{
+    //building heap
+    for(int i =n/2-1;i>=0;i--)
+        heapify(arr, n, i);
+
+    for(int i = 0; i<n-1;i++)
     {
-        auto temp = q.top();
-        ll distance = -temp.ff;
-        ll node = temp.ss;
-        q.pop();
-        if(processed[node])
-            continue;
-        processed[node] = true;
-        for(auto &child : adj[node])
-        {   
-            if(distance+child.ss < dis[child.ff]){
-                dis[child.ff] = distance+child.ss;
-                    q.push({-dis[child.ff], child.ff});
-                }
-        }
+        swap(arr[n-1-i], arr[0]);
+        heapify(arr, n-1-i, 0);
     }
 }
 
@@ -65,22 +66,14 @@ int32_t main()
     freopen("output.txt", "w", stdout);
     #endif
   
-    ll n, m, u, v, w; cin>>n>>m;
-    f(i, m)
-    {
-        cin>>u>>v>>w;
-        if(adj[u][v]==0 or adj[u][v]>w)
-            adj[u][v] = w;
-        if(adj[v][u]==0 or adj[v][u]>w)
-            adj[v][u] = w;
-    }
-
-    dis.assign(n+1, INF);
-
-    dijkstra(1);
-    fa(i, 2, n+1)
-        cout<<dis[i]<<" ";
+    vi arr = {5, 4, 2, 1, 3};
+    f(i, 5)
+        cout<<arr[i]<<" ";
     cout<<endl;
-
+    HeapSort(arr, 5);
+    
+    f(i, 5)
+        cout<<arr[i]<<" ";
+    cout<<endl;
     return 0;
 }
