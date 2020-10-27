@@ -27,36 +27,32 @@ using namespace std;
 #define ce cout<<endl
 #define all(x) x.begin(),x.end()
 #define type(x) cerr<<typeid(x).name();
+const ll INF = 1e9;
 
+unordered_map<ll, unordered_map<ll, ll>> adj;
+vll dis(100005);
 
-vll adj[100005];
-vll tin, low;
-ll timer;
-bool visited[100005];
-void dfs(ll node, ll par)
+void dijkstra(ll source)
 {
-    tin[node] = low[node] = timer++;
-    visited[node] = true;
-    ll cnt=0;
-    for(ll child : adj[node])
+    dis[source] = 0;
+    priority_queue<pair<ll, ll>> q;
+    q.push({0, source});
+
+    while(!q.empty())
     {
-        if(child == par)
-            continue;
-        if(visited[child])
-            low[node] = min(low[node], tin[child]);
-        else
-        {
-            dfs(child, node);
-            low[node] = min(low[node], low[child]);
-            if(low[child]>=tin[node]  and par!=-1)
-                cout<<"articulation point : "<<node<<endl;
-            cnt++;
+        auto temp = q.top();
+        ll distance = -temp.ff;
+        ll node = temp.ss;
+        q.pop();
+        for(auto &child : adj[node])
+        {   
+            if(distance+child.ss < dis[child.ff]){
+                dis[child.ff] = distance+child.ss;
+                    q.push({-dis[child.ff], child.ff});
+                }
         }
     }
-    if(par==-1 and cnt>1)
-        cout<<"root articulation points : "<<node<<endl;
 }
-
 
 int32_t main()
 {
@@ -66,19 +62,21 @@ int32_t main()
     freopen("output.txt", "w", stdout);
     #endif
   
-    ll n, u, v; cin>>n;
-    f(i, n)
+    ll n, m, u, v, w; cin>>n>>m;
+    f(i, m)
     {
-        cin>>u>>v;
-        adj[u].pb(v);
-        adj[v].pb(u);
+        cin>>u>>v>>w;
+        if(adj[u][v]==0 or adj[u][v]>w)
+            adj[u][v] = w;
+        if(adj[v][u]==0 or adj[v][u]>w)
+            adj[v][u] = w;
     }
-    tin.assign(n+1, -1ll);
-    low.assign(n+1, -1ll);
-    // cnt = 0;
-    fa(i, 1, n+1)
-        if(!visited[i])
-            dfs(i, -1);
+
+    dis.assign(n+1, INF);
+    dijkstra(1);
+    fa(i, 2, n+1)
+        cout<<dis[i]<<" ";
+    cout<<endl;
 
     return 0;
-}   
+}
