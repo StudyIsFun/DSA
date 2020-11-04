@@ -1,3 +1,10 @@
+/*
+999. Most frequent word in an array of strings
+
+Given an array arr containing N words consisting of lowercase characters. Your task is to find the most frequent word in the array. If multiple words have same frequency, then print the word whose first occurence occurs last in the array as compared to the other strings with same frequency.
+*/
+
+
 // { Driver Code Starts
 // Initial template for C++
 
