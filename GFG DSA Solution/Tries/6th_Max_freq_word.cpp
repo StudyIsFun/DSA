@@ -1,10 +1,3 @@
-/*
-999. Most frequent word in an array of strings
-
-Given an array arr containing N words consisting of lowercase characters. Your task is to find the most frequent word in the array. If multiple words have same frequency, then print the word whose first occurence occurs last in the array as compared to the other strings with same frequency.
-*/
-
-
 // { Driver Code Starts
 // Initial template for C++
 
@@ -66,12 +59,17 @@ void insert(TrieNode *root, string key, int pos){
         cnt = root->count;
     }
     else if(root->count == cnt){
-        position = root->encounteredAt;
-        curr = key;
+        if(position<root->encounteredAt)
+        {
+            position = root->encounteredAt;
+            curr = key;
+        }
     }
 }
 
 string mostFrequentWord(string arr[], int n) {
+    cnt = 0;
+    position = -1;
     TrieNode *root = new TrieNode();
     for(int i=0;i<n;i++)
         insert(root, arr[i], i+1);
